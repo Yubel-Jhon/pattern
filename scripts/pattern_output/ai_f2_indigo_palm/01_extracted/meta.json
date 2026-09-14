@@ -1,0 +1,29 @@
+{
+  "source": "C:\\Users\\Admin\\Desktop\\印花模块\\testset\\inputs\\f2_indigo_palm.jpg",
+  "type": "garment",
+  "layer": "L0",
+  "vlm_model": "qwen3-vl-plus",
+  "i2i_model": "qwen-image-3.0-pro",
+  "garment_type": "fabric",
+  "motifs": [
+    {
+      "id": "M01",
+      "name": "热带花卉与叶片图案",
+      "pattern_type": "floral",
+      "bbox": [
+        0,
+        0,
+        1600,
+        2400
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "colors": [
+        "indigo"
+      ],
+      "layer": "L0"
+    }
+  ]
+}

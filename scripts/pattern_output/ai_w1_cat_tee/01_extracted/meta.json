@@ -1,0 +1,92 @@
+{
+  "source": "C:\\Users\\Admin\\Desktop\\印花模块\\testset\\inputs\\w1_cat_tee.png",
+  "type": "garment",
+  "layer": "L0",
+  "vlm_model": "qwen3-vl-plus",
+  "i2i_model": "qwen-image-3.0-pro",
+  "image_type": "lifestyle",
+  "bg_mode": "auto",
+  "garment_type": "t-shirt",
+  "motifs": [
+    {
+      "id": "M01",
+      "name": "橘猫戴书帽插画",
+      "pattern_type": "graphic",
+      "bbox": [
+        135,
+        327,
+        274,
+        513
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "colors": [
+        "orange",
+        "green",
+        "brown"
+      ],
+      "layer": "L0"
+    },
+    {
+      "id": "M02",
+      "name": "cat filled with knowledge",
+      "pattern_type": "text",
+      "bbox": [
+        166,
+        508,
+        274,
+        531
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "colors": [
+        "black"
+      ],
+      "layer": "L0"
+    },
+    {
+      "id": "M03",
+      "name": "小花小叶装饰纹样",
+      "pattern_type": "floral",
+      "bbox": [
+        130,
+        327,
+        274,
+        513
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "colors": [
+        "blue",
+        "white",
+        "green"
+      ],
+      "layer": "L0"
+    },
+    {
+      "id": "M04",
+      "name": "帽子文字LOGO",
+      "pattern_type": "text",
+      "bbox": [
+        162,
+        101,
+        229,
+        124
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "colors": [
+        "white"
+      ],
+      "layer": "L0"
+    }
+  ]
+}

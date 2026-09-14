@@ -1,0 +1,33 @@
+{
+  "source": "C:\\Users\\Admin\\Desktop\\印花模块\\testset\\real_pool\\sg6_shirt_embroidery_garden.jpg",
+  "type": "garment",
+  "layer": "L0",
+  "vlm_model": "qwen3-vl-plus",
+  "i2i_model": "qwen-image-3.0-pro",
+  "garment_type": "short-sleeve shirt",
+  "motifs": [
+    {
+      "id": "M01",
+      "name": "embroidered floral vine with cutwork",
+      "pattern_type": "floral",
+      "bbox": [
+        553,
+        84,
+        1224,
+        933
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "colors": [
+        "white",
+        "orange",
+        "pink",
+        "green",
+        "yellow"
+      ],
+      "layer": "L0"
+    }
+  ]
+}

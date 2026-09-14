@@ -1,0 +1,32 @@
+{
+  "source": "C:\\Users\\Admin\\Desktop\\印花模块\\testset\\inputs\\g4_tropical_maxi.jpg",
+  "type": "garment",
+  "layer": "L0",
+  "vlm_model": "qwen3-vl-plus",
+  "i2i_model": "qwen-image-3.0-pro",
+  "image_type": "scene",
+  "garment_type": "maxi dress",
+  "motifs": [
+    {
+      "id": "M01",
+      "name": "pink chrysanthemum with green monstera leaves",
+      "pattern_type": "floral",
+      "bbox": [
+        0,
+        417,
+        1564,
+        2397
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "colors": [
+        "yellow",
+        "pink",
+        "green"
+      ],
+      "layer": "L0"
+    }
+  ]
+}

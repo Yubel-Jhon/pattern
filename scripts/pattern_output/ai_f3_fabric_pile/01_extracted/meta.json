@@ -1,0 +1,31 @@
+{
+  "source": "C:\\Users\\Admin\\Desktop\\印花模块\\testset\\inputs\\f3_fabric_pile.jpg",
+  "type": "garment",
+  "layer": "L0",
+  "vlm_model": "qwen3-vl-plus",
+  "i2i_model": "qwen-image-3.0-pro",
+  "garment_type": "unknown",
+  "motifs": [
+    {
+      "id": "M01",
+      "name": "抽象扎染图案",
+      "pattern_type": "graphic",
+      "bbox": [
+        875,
+        0,
+        1129,
+        2918
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "colors": [
+        "teal",
+        "black",
+        "white"
+      ],
+      "layer": "L0"
+    }
+  ]
+}

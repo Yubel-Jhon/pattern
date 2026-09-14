@@ -1,0 +1,10 @@
+# Pattern Workshop 核心依赖（纯 pip，无 torch）
+pillow
+numpy
+scipy
+scikit-image
+imagehash
+
+# ---- 可选增强（保真档辅助 / box 级分割；不装不影响主通道）----
+# ultralytics      # FastSAM box 分割，首次运行自动下载 FastSAM-s.pt (22.7MB)
+# rembg[cpu]       # 主体抠图辅助（保真档）

@@ -1,0 +1,36 @@
+{
+  "source": "C:\\Users\\Admin\\Desktop\\印花模块\\testset\\inputs\\f1_dark_vintage_floral.jpg",
+  "type": "garment",
+  "layer": "L0",
+  "vlm_model": "qwen3-vl-plus",
+  "i2i_model": "qwen-image-3.0-pro",
+  "image_type": "fabric-flat",
+  "bg_mode": "auto",
+  "garment_type": "",
+  "motifs": [
+    {
+      "id": "M01",
+      "name": "繁复花卉满印",
+      "pattern_type": "floral",
+      "bbox": [
+        0,
+        0,
+        1600,
+        1067
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "colors": [
+        "pink",
+        "yellow",
+        "red",
+        "purple",
+        "blue",
+        "green"
+      ],
+      "layer": "L0"
+    }
+  ]
+}

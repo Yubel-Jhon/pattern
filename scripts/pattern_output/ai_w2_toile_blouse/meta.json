@@ -1,0 +1,17 @@
+{
+  "steps": {
+    "extract": {
+      "at": "2026-09-14T19:38:08",
+      "source": "C:\\Users\\Admin\\Desktop\\印花模块\\testset\\inputs\\w2_toile_blouse.png",
+      "type": "garment(L0-AI)",
+      "motif_count": 1,
+      "files": [
+        "motif_01.png",
+        "preview_annotated.jpg",
+        "preview_contact.jpg"
+      ]
+    }
+  },
+  "created": "2026-09-14T18:31:24",
+  "updated": "2026-09-14T19:38:08"
+}
