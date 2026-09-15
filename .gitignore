@@ -1,3 +1,12 @@
+# 内部产物不入库
+pattern_output/
+scripts/pattern_output/
 __pycache__/
 *.pyc
 .DS_Store
+
+# 模型权重不入库（首次运行自动下载）
+*.pt
+
+# 内部看板
+看板.html

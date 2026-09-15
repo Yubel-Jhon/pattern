@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>纹样高清化 · Pattern Enhance 架构图</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#faf9f6;color:#26221c;
+       font:13px/1.55 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+       display:flex;flex-direction:column;align-items:center;padding:22px 10px 44px}
+  h1{font-size:18px;font-weight:700;margin:0 0 4px;display:flex;align-items:center;gap:8px}
+  h1 .dot{width:9px;height:9px;border-radius:50%;background:#2f6b5a}
+  .sub{color:#8b8377;font-size:12px;margin-bottom:16px}
+  .board{position:relative;width:1240px;height:1110px;flex:none;
+         border:1px solid #e8e3d9;border-radius:12px;background:#fff;
+         box-shadow:0 2px 14px rgba(60,50,30,.06)}
+
+  .node{position:absolute;border-radius:8px;padding:9px 14px;text-align:center;
+        display:flex;flex-direction:column;justify-content:center;line-height:1.55;
+        box-shadow:0 1px 4px rgba(60,50,30,.10)}
+  .node b{font-weight:700}
+  .in      {background:#5c8375;color:#fff}
+  .triage  {background:#4f7ba6;color:#fff}
+  .engine  {background:#2f6b5a;color:#fff}
+  .render  {background:#7d5ba6;color:#fff}
+  .out     {background:#3f7d6b;color:#fff}
+  .branch  {background:#fdf3ea;border:1px solid #ecd9c4;color:#26221c;box-shadow:none}
+  .dashed  {background:#fbfaf7;border:1.5px dashed #b4632c;color:#26221c;text-align:left;box-shadow:none}
+  .dashed .tt{font-weight:700;margin-bottom:2px}
+  .ctrl{position:absolute;font-size:11px;color:#b4632c}
+  .diamtext{position:absolute;text-align:center;color:#fff;line-height:1.5}
+  svg.wires{position:absolute;inset:0;width:100%;height:100%}
+
+  /* 底部板块链 */
+  .chain{position:absolute;left:0;right:0;top:1008px;height:76px;
+         display:flex;align-items:center;justify-content:center}
+  .chain .cbox{width:172px;height:60px;border:1px solid #e8e3d9;border-radius:8px;
+               background:#fbfaf7;color:#5c554a;font-size:12px;text-align:center;
+               display:flex;flex-direction:column;justify-content:center;flex:none;line-height:1.45}
+  .chain .cbox .no{font-weight:700}
+  .chain .cbox.cur{background:#eef6f2;border:2px solid #2f6b5a;color:#245346;font-weight:700}
+  .chain .arr{width:30px;text-align:center;color:#8b8377;flex:none}
+</style>
+</head>
+<body>
+  <h1><span class="dot"></span>🔍 纹样高清化 · Pattern Enhance 架构图</h1>
+  <div class="sub">印花模块 板块2 · 六层管线（体检 → 路由 → 像素引擎 → 渲染 → 导出）· 双击即看 · 图片零上传</div>
+
+  <div class="board">
+    <!-- ================= 连线层 ================= -->
+    <svg class="wires" viewBox="0 0 1240 1110">
+      <defs>
+        <marker id="ah" markerWidth="9" markerHeight="9" refX="7.5" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="#8a8478"/>
+        </marker>
+      </defs>
+      <!-- 主链：L1→L2→菱形→L4→L5→L6 -->
+      <line x1="620" y1="92"  x2="620" y2="126" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <line x1="620" y1="240" x2="620" y2="264" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <!-- 菱形底顶点 → 四分支顶边 -->
+      <line x1="620" y1="418" x2="245" y2="448" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+      <line x1="620" y1="418" x2="495" y2="448" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+      <line x1="620" y1="418" x2="745" y2="448" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+      <line x1="620" y1="418" x2="995" y2="448" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+      <!-- 四分支底边 → L4 顶边（不穿框） -->
+      <line x1="245" y1="532" x2="470" y2="564" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+      <line x1="495" y1="532" x2="570" y2="564" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+      <line x1="745" y1="532" x2="670" y2="564" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+      <line x1="995" y1="532" x2="770" y2="564" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+      <!-- L4→L5→L6 -->
+      <line x1="620" y1="702" x2="620" y2="730" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <line x1="620" y1="826" x2="620" y2="852" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <!-- 参数面板 虚线控制（绕开分支框） -->
+      <path d="M 962 132 L 790 132 L 752 334" fill="none" stroke="#b4632c"
+            stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+      <path d="M 1140 192 L 1140 556 L 886 598" fill="none" stroke="#b4632c"
+            stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+      <!-- 全程约束 粗实线 === L6 -->
+      <line x1="898" y1="856" x2="796" y2="884" stroke="#b4632c" stroke-width="3"/>
+      <!-- 分隔线 -->
+      <line x1="24" y1="982" x2="1216" y2="982" stroke="#e3ded2" stroke-width="1"/>
+      <!-- 菱形本体 -->
+      <polygon points="620,270 748,344 620,418 492,344" fill="#a26a3f"
+               style="filter:drop-shadow(0 1px 4px rgba(60,50,30,.15))"/>
+    </svg>
+
+    <!-- ================= 主流程 ================= -->
+    <!-- L1 输入层 -->
+    <div class="node in" style="left:490px;top:28px;width:260px;height:64px">
+      🖼 <b>L1 输入层</b><br>拖拽 / 点击 / Ctrl+V 粘贴 → 工作画布 ≤2048px
+    </div>
+
+    <!-- L2 体检分诊层 -->
+    <div class="node triage" style="left:460px;top:130px;width:320px;height:110px;font-size:12.5px">
+      🔍 <b>L2 体检分诊层 triage</b><br>
+      laplacian 清晰度 · 短边尺寸 · 软边占比<br>
+      偏色通道比(&gt;1.14 重) · JPEG 块度(&gt;1.35 噪)<br>
+      → 建议倍数 2×/4×/8× + 异常警告
+    </div>
+
+    <!-- L3 路由决策层（菱形文字） -->
+    <div class="diamtext" style="left:520px;top:316px;width:200px;height:56px;font-size:12px">
+      🧭 <b>L3 路由决策层</b><br>预处理开关 × 放大倍数 × alpha
+    </div>
+
+    <!-- 四分支 -->
+    <div class="node branch" style="left:150px;top:452px;width:190px;height:78px">
+      <b>偏色校正路</b><br>灰世界白平衡<br>重偏色才启用
+    </div>
+    <div class="node branch" style="left:400px;top:452px;width:190px;height:78px">
+      <b>压缩噪清理路</b><br>中值3 滤波<br>块噪才启用
+    </div>
+    <div class="node branch" style="left:650px;top:452px;width:190px;height:78px">
+      <b>放大路</b><br>Lanczos3 2×/4×/8×<br>短边封顶 8192px
+    </div>
+    <div class="node branch" style="left:900px;top:452px;width:190px;height:78px">
+      <b>alpha 路</b><br>保留透明底<br>/ 合成白底
+    </div>
+
+    <!-- L4 像素引擎层 -->
+    <div class="node engine" style="left:360px;top:568px;width:520px;height:134px;font-size:12.5px">
+      ⚙ <b>L4 像素引擎层（纯函数，对齐 skill 版）</b><br>
+      grayWorld ｜ median3 ｜ lanczosResize(Float32 双 pass)<br>
+      → unsharp(只锐 RGB) ｜ bestZoom(梯度最密窗口)<br>
+      守卫：输出 ≤8192px / ≤40MP 超限自动降档
+    </div>
+
+    <!-- L5 渲染层 -->
+    <div class="node render" style="left:420px;top:736px;width:400px;height:90px;font-size:12.5px">
+      🎨 <b>L5 渲染层 Canvas</b><br>
+      前后对比 ORIGINAL·ENHANCED ｜ 细节放大(左糊右锐)<br>
+      高清大图(棋盘底显透明) ｜ meta 台账表
+    </div>
+
+    <!-- L6 导出层 -->
+    <div class="node out" style="left:450px;top:858px;width:340px;height:94px;font-size:12.5px">
+      📦 <b>L6 导出层</b><br>
+      高清 PNG(RGBA) + 白底 JPG + 前后对比 JPG<br>
+      + meta.json 下载
+    </div>
+
+    <!-- ================= 侧挂 ================= -->
+    <!-- 参数面板 -->
+    <div class="node dashed" style="left:930px;top:52px;width:270px;height:138px">
+      <div class="tt">🎛 参数面板</div>
+      放大倍数(自动建议)<br>偏色校正 / 压缩噪清理 / 锐化<br>透明度 · 各带 auto·on·off
+    </div>
+    <div class="ctrl" style="left:800px;top:112px">控制</div>
+    <div class="ctrl" style="left:1150px;top:370px">控制</div>
+
+    <!-- 全程约束 -->
+    <div class="node dashed" style="left:906px;top:752px;width:306px;height:138px;font-size:11.5px">
+      <div class="tt">🛡 全程约束</div>
+      100% 本地运行 · 图片零上传<br>
+      无外部依赖 / 无 CDN<br>
+      保真档诚实标注 lanczos3_h5<br>
+      与 skill 逐函数 1:1 对齐<br>
+      AI 补细节 / ESRGAN / VLM 质检 → 命令行职责
+    </div>
+
+    <!-- ================= 底部板块链 ================= -->
+    <div class="chain">
+      <div class="cbox"><span class="no">① 图案提取</span>花稿 / 回样</div>
+      <div class="arr">→</div>
+      <div class="cbox cur"><span class="no">② 高清修复 ★ 本skill</span>超分放大</div>
+      <div class="arr">→</div>
+      <div class="cbox"><span class="no">③ 风格延展</span>i2i 换风格</div>
+      <div class="arr">→</div>
+      <div class="cbox"><span class="no">④ 图案变体</span>换色 / 换形 / 重排</div>
+      <div class="arr">→</div>
+      <div class="cbox"><span class="no">⑤ 无缝循环</span>四方连续</div>
+      <div class="arr">→</div>
+      <div class="cbox"><span class="no">⑥ 配色重组</span>分层换色</div>
+    </div>
+  </div>
+</body>
+</html>
