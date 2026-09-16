@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>风格延展 · Pattern Restyle 架构图</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#faf9f6;color:#26221c;
+       font:13px/1.55 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+       display:flex;flex-direction:column;align-items:center;padding:22px 10px 44px}
+  h1{font-size:18px;font-weight:700;margin:0 0 4px;display:flex;align-items:center;gap:8px}
+  h1 .dot{width:9px;height:9px;border-radius:50%;background:#2f6b5a}
+  .sub{color:#8b8377;font-size:12px;margin-bottom:16px}
+  .board{position:relative;width:1240px;height:1140px;flex:none;
+         border:1px solid #e8e3d9;border-radius:12px;background:#fff;
+         box-shadow:0 2px 14px rgba(60,50,30,.06)}
+
+  .node{position:absolute;border-radius:8px;padding:9px 14px;text-align:center;
+        display:flex;flex-direction:column;justify-content:center;line-height:1.55;
+        box-shadow:0 1px 4px rgba(60,50,30,.10)}
+  .node b{font-weight:700}
+  .in      {background:#5c8375;color:#fff}
+  .triage  {background:#4f7ba6;color:#fff}
+  .engine  {background:#2f6b5a;color:#fff}
+  .render  {background:#7d5ba6;color:#fff}
+  .out     {background:#3f7d6b;color:#fff}
+  .branch  {background:#fdf3ea;border:1px solid #ecd9c4;color:#26221c;box-shadow:none}
+  .dashed  {background:#fbfaf7;border:1.5px dashed #b4632c;color:#26221c;text-align:left;box-shadow:none}
+  .dashed .tt{font-weight:700;margin-bottom:2px}
+  .ctrl{position:absolute;font-size:11px;color:#b4632c}
+  .lbl{position:absolute;font-size:11px;color:#b4632c;background:rgba(251,250,247,.92);
+       padding:0 4px;border-radius:4px}
+  svg.wires{position:absolute;inset:0;width:100%;height:100%}
+
+  /* 底部板块链 */
+  .chain{position:absolute;left:0;right:0;top:1012px;height:76px;
+         display:flex;align-items:center;justify-content:center}
+  .chain .cbox{width:172px;height:60px;border:1px solid #e8e3d9;border-radius:8px;
+               background:#fbfaf7;color:#5c554a;font-size:12px;text-align:center;
+               display:flex;flex-direction:column;justify-content:center;flex:none;line-height:1.45}
+  .chain .cbox .no{font-weight:700}
+  .chain .cbox.cur{background:#eef6f2;border:2px solid #2f6b5a;color:#245346;font-weight:700}
+  .chain .arr{width:30px;text-align:center;color:#8b8377;flex:none}
+</style>
+</head>
+<body>
+  <h1><span class="dot"></span>🎨 风格延展 · Pattern Restyle 架构图</h1>
+  <div class="sub">印花模块 板块3 · 识别驱动扇出-回炉拓扑：一稿 × VLM 提案 N 方向并行重画 · 眼手分工 · 两段式花钱
+  　｜　图例：<span style="color:#4f7ba6">🟦 眼=qwen-vl（便宜）</span>
+  　<span style="color:#2f6b5a">🟩 手=生图引擎（GPT 终点）</span>　🟧 虚线=回炉 / 人工 / 两段循环</div>
+
+  <div class="board">
+    <!-- ================= 连线层 ================= -->
+    <svg class="wires" viewBox="0 0 1240 1140">
+      <defs>
+        <marker id="ah" markerWidth="9" markerHeight="9" refX="7.5" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="#8a8478"/>
+        </marker>
+        <marker id="ao" markerWidth="9" markerHeight="9" refX="7.5" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="#b4632c"/>
+        </marker>
+      </defs>
+
+      <!-- L1 → L2 -->
+      <line x1="340" y1="78" x2="396" y2="78" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <!-- L2 → 资格门（拒收出口） -->
+      <line x1="400" y1="80" x2="348" y2="146" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+      <!-- 元素清单 扇出总线：L2 底 → 左缘竖bus → 三条方向行 -->
+      <path d="M 610 162 L 610 190 L 30 190 L 30 605" fill="none" stroke="#8a8478" stroke-width="1.6"/>
+      <line x1="30" y1="285" x2="56" y2="285" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <line x1="30" y1="445" x2="56" y2="445" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <line x1="30" y1="605" x2="56" y2="605" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <!-- 风格行 → 引擎层（三条并行） -->
+      <line x1="360" y1="285" x2="466" y2="285" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <line x1="360" y1="445" x2="466" y2="445" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <line x1="360" y1="605" x2="466" y2="605" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <!-- 引擎层 → 各行质检（三条并行） -->
+      <line x1="720" y1="285" x2="826" y2="285" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <line x1="720" y1="445" x2="826" y2="445" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <line x1="720" y1="605" x2="826" y2="605" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <!-- 回炉环（每条 lane 独立，画一条代表弧） -->
+      <path d="M 870 226 C 870 198, 680 198, 680 226" fill="none" stroke="#b4632c"
+            stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#ao)"/>
+      <!-- 引擎 manual 旁路出口 → 人工卡框 -->
+      <path d="M 706 226 C 780 176, 880 150, 944 106" fill="none" stroke="#b4632c"
+            stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#ao)"/>
+      <!-- 人工卡框 → 右缘下行 → --collect 回接 L6 右缘 -->
+      <path d="M 1202 80 L 1218 80 L 1218 825 L 1176 825" fill="none" stroke="#b4632c"
+            stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#ao)"/>
+      <!-- 各行质检 → 联络表（右缘汇流 + 末行直落） -->
+      <path d="M 1164 285 L 1185 285 L 1185 712" fill="none" stroke="#8a8478" stroke-width="1.5"/>
+      <path d="M 1164 445 L 1185 445" fill="none" stroke="#8a8478" stroke-width="1.5"/>
+      <path d="M 1185 712 L 1085 712 L 1085 766" fill="none" stroke="#8a8478" stroke-width="1.5" marker-end="url(#ah)"/>
+      <line x1="995" y1="654" x2="995" y2="766" stroke="#8a8478" stroke-width="1.5" marker-end="url(#ah)"/>
+      <!-- 两段式花钱外层循环：L6 → 绕回风格列 -->
+      <path d="M 466 825 L 390 825 L 390 680 L 214 680 L 214 664" fill="none" stroke="#b4632c"
+            stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#ao)"/>
+      <!-- 分隔线 -->
+      <line x1="24" y1="1000" x2="1216" y2="1000" stroke="#e3ded2" stroke-width="1"/>
+    </svg>
+
+    <!-- ================= 节点 ================= -->
+    <!-- 入口 + 资格门 -->
+    <div class="node in" style="left:60px;top:30px;width:280px;height:64px;font-size:12.5px">
+      <b>L1 输入层</b><br>01_extracted / 02_hd 直喂 · 工作区自动续接
+    </div>
+    <div class="node branch" style="left:60px;top:132px;width:280px;height:58px;font-size:12px">
+      <b>🚫 资格门：非花稿拒收 → 指回板块1</b>
+    </div>
+
+    <!-- 眼：分诊+开放式识别 -->
+    <div class="node triage" style="left:400px;top:20px;width:420px;height:142px;font-size:12px">
+      <b>🔍 L2 分诊 + 开放式识别（眼 · qwen-vl 便宜）</b><br>
+      判型卡 ｜ 元素清单 · 构图摘要 · KMeans 色板<br>
+      <b>原稿风格画像 = 生成端 CURRENT 锚</b><br>
+      <b>方向提案：VLM 自己框 5-6 方向（不预设）</b><br>
+      <b>双用锚点 = prompt 锁词 × 质检清单</b>
+    </div>
+
+    <!-- 方向行 ×3（VLM 提案扇出） -->
+    <div class="node branch" style="left:60px;top:230px;width:300px;height:110px;font-size:12px">
+      <b>🎨 方向① 木刻版画（VLM 提案）</b><br>
+      spec 锚着元素写（"orange cat in solid terracotta"）<br>
+      prompt = DNA Lock + 清单 + 画像→spec 强关联
+    </div>
+    <div class="node branch" style="left:60px;top:390px;width:300px;height:110px;font-size:12px">
+      <b>🎨 方向② 中古现代（VLM 提案）</b><br>
+      palette_impact 由 VLM 判（keep / restyle）<br>
+      同一清单 × 不同提案 = 同源兄弟稿
+    </div>
+    <div class="node branch" style="left:60px;top:550px;width:300px;height:110px;font-size:12px">
+      <b>🎨 方向③ 型染蓝染（VLM 提案）</b><br>
+      spec 一句 EN · 具体可视 · 无画师名<br>
+      离原稿风格足够远（画像判距离）
+    </div>
+    <div class="node branch" style="left:60px;top:694px;width:300px;height:52px;font-size:11.5px">
+      … 提案共 5-6 方向 ｜ VLM 失败回落预设 6 方向
+    </div>
+
+    <!-- 手：引擎层（跨行共享） -->
+    <div class="node engine" style="left:470px;top:230px;width:250px;height:426px;font-size:12px">
+      <b>⚙ L4 引擎层（手）</b><br><b>engines.generate() 统一接口</b><br>
+      ── 按风格逐张跑 ──<br>
+      <b>gpt（终点引擎）</b><br>
+      images/edits · multipart<br>
+      transparent 原生透明底<br>
+      image[] 多参考 · 中转直连<br>
+      <b>qwen（对照档）</b><br>
+      白底合成防黑底<br>
+      <b>manual → 右侧旁路</b><br>
+      只出卡不发请求<br>
+      <b>── 回炉≤2 换变量 ──</b><br>
+      缺元素→逐元素点名<br>
+      风格没出→加强度词
+    </div>
+
+    <!-- 各行质检（眼） -->
+    <div class="node render" style="left:830px;top:230px;width:330px;height:104px;font-size:12px">
+      <b>✓ 出口质检（眼）</b><br>
+      逐元素核对 missing / composition / style<br>
+      色板按 palette_policy ｜ verdict pass·fail<br>
+      ↺ 回炉≤2（每条 lane 独立循环）
+    </div>
+    <div class="node render" style="left:830px;top:390px;width:330px;height:104px;font-size:12px">
+      <b>✓ 出口质检（眼）</b><br>
+      逐元素核对 missing / composition / style<br>
+      色板按 palette_policy ｜ verdict pass·fail<br>
+      ↺ 回炉≤2（每条 lane 独立循环）
+    </div>
+    <div class="node render" style="left:830px;top:550px;width:330px;height:104px;font-size:12px">
+      <b>✓ 出口质检（眼）</b><br>
+      逐元素核对 missing / composition / style<br>
+      四边连续只报不修→板块5（allover）<br>
+      ↺ 回炉≤2（每条 lane 独立循环）
+    </div>
+
+    <!-- 导出 -->
+    <div class="node out" style="left:470px;top:770px;width:400px;height:110px;font-size:12px">
+      <b>L6 导出层</b><br>
+      03_restyle/&lt;stem&gt;_&lt;风格&gt;[_vN].png（motif=透明底）<br>
+      contact_sheet.jpg（原稿+各风格列，OK/FAIL 标色）<br>
+      meta.json：prompt / verdict / attempts 全记档
+    </div>
+
+    <!-- 手动档旁路 -->
+    <div class="node dashed" style="left:950px;top:24px;width:250px;height:110px;font-size:11px">
+      <div class="tt">🖨 手动档旁路（人工）</div>
+      出提示词卡 → ChatGPT 生图<br>
+      结果存回 03_restyle/（*_manual.png）<br>
+      --collect 回接质检 · 并入联络表
+    </div>
+
+    <!-- 参数面板 -->
+    <div class="node dashed" style="left:60px;top:790px;width:300px;height:130px;font-size:11.5px">
+      <div class="tt">🎛 参数面板</div>
+      styles: auto(VLM 提案) / all / 点名 / custom:描述<br>
+      count≤4 ｜ quality draft→final 两段式花钱<br>
+      engine auto/gpt/qwen/manual ｜ carrier auto<br>
+      --ref 风格参考图（GPT 原生多参考）
+    </div>
+
+    <!-- 宪法 -->
+    <div class="node dashed" style="left:470px;top:896px;width:400px;height:96px;font-size:11px">
+      <div class="tt">⚖ 宪法（与板块2 相反相成）</div>
+      必须改风格，但不能换内容 ｜ 无像素档兜底→如实标注+指路手动档<br>
+      眼手分工：VLM=qwen-vl / GPT 只花生图 ｜ 主动换色归板块6<br>
+      批量不做（按张计费）｜ allover 四边连续只报不修→板块5
+    </div>
+
+    <!-- 循环标注 -->
+    <div class="lbl" style="left:96px;top:666px">↻ 两段式花钱：draft 联络表挑方向 → 重跑 --quality final --count 3</div>
+    <div class="lbl" style="left:688px;top:186px">回炉≤2 换变量（每风格独立）</div>
+    <div class="ctrl" style="left:856px;top:130px">人工</div>
+
+    <!-- ================= 底部板块链 ================= -->
+    <div class="chain">
+      <div class="cbox"><span class="no">① 图案提取</span>花稿 / 回样</div>
+      <div class="arr">→</div>
+      <div class="cbox"><span class="no">② 高清修复</span>超分放大</div>
+      <div class="arr">→</div>
+      <div class="cbox cur"><span class="no">③ 风格延展 ★ 本skill</span>GPT 换画法重画</div>
+      <div class="arr">→</div>
+      <div class="cbox"><span class="no">④ 图案变体</span>换色 / 换形 / 重排</div>
+      <div class="arr">→</div>
+      <div class="cbox"><span class="no">⑤ 无缝循环</span>四方连续</div>
+      <div class="arr">→</div>
+      <div class="cbox"><span class="no">⑥ 配色重组</span>分层换色</div>
+    </div>
+  </div>
+</body>
+</html>
