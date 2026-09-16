@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>图案变体 · Pattern Variants 架构图</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#faf9f6;color:#26221c;
+       font:13px/1.55 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+       display:flex;flex-direction:column;align-items:center;padding:22px 10px 44px}
+  h1{font-size:18px;font-weight:700;margin:0 0 4px;display:flex;align-items:center;gap:8px}
+  h1 .dot{width:9px;height:9px;border-radius:50%;background:#2f6b5a}
+  .sub{color:#8b8377;font-size:12px;margin-bottom:16px;text-align:center;max-width:1260px}
+  .board{position:relative;width:1240px;height:1104px;flex:none;
+         border:1px solid #e8e3d9;border-radius:12px;background:#fff;
+         box-shadow:0 2px 14px rgba(60,50,30,.06)}
+
+  .node{position:absolute;border-radius:8px;padding:9px 14px;text-align:center;
+        display:flex;flex-direction:column;justify-content:center;line-height:1.55;
+        box-shadow:0 1px 4px rgba(60,50,30,.10);font-size:12.5px}
+  .node b{font-weight:700}
+  .node small{font-size:11px;opacity:.92}
+  .in      {background:#5c8375;color:#fff}
+  .triage  {background:#4f7ba6;color:#fff}
+  .engine  {background:#2f6b5a;color:#fff}
+  .render  {background:#7d5ba6;color:#fff}
+  .out     {background:#3f7d6b;color:#fff}
+  .fork    {background:#a26a3f;color:#fff}
+  .free    {background:#b4632c;color:#fff}
+  .branch  {background:#fdf3ea;border:1px solid #ecd9c4;color:#26221c;box-shadow:none}
+  .dashed  {background:#fbfaf7;border:1.5px dashed #b4632c;color:#26221c;text-align:left;box-shadow:none}
+
+  .zone{position:absolute;border-radius:12px}
+  .z1{background:#f3f8f5;border:1.5px solid rgba(47,107,90,.30)}
+  .z2{background:#fdf6ee;border:1.5px solid rgba(180,99,44,.35)}
+  .zlabel{position:absolute;font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:6px}
+  .zl1{color:#245346;background:#e7f1ec;left:40px;top:352px}
+  .zl2{color:#8a4a1c;background:#f9ead9;left:840px;top:352px}
+
+  .lbl{position:absolute;font-size:11px;color:#b4632c;background:rgba(251,250,247,.92);
+       padding:0 4px;border-radius:4px}
+  svg.wires{position:absolute;inset:0;width:100%;height:100%}
+
+  /* 底部板块链 */
+  .chain{position:absolute;left:0;right:0;top:976px;height:76px;
+         display:flex;align-items:center;justify-content:center}
+  .chain .cbox{width:172px;height:60px;border:1px solid #e8e3d9;border-radius:8px;
+               background:#fbfaf7;color:#5c554a;font-size:12px;text-align:center;
+               display:flex;flex-direction:column;justify-content:center;flex:none;line-height:1.45}
+  .chain .cbox .no{font-weight:700}
+  .chain .cbox.cur{background:#eef6f2;border:2px solid #2f6b5a;color:#245346;font-weight:700}
+  .chain .arr{width:30px;text-align:center;color:#8b8377;flex:none}
+</style>
+</head>
+<body>
+  <h1><span class="dot"></span>🧩 图案变体 · Pattern Variants 架构图</h1>
+  <div class="sub">印花模块 板块4 · 两方向分岔拓扑：方向一=参数化道（toss 散点=Poisson 布点+抖动，免费）· 方向二=--free 自由直通（花钱）· 菜单优先，用户没下单永不生成
+  　｜　图例：<span style="color:#2f6b5a">🟩 纯代码主轴</span>　<span style="color:#4f7ba6">🟦 眼=VLM 判型/校验/度量</span>　<span style="color:#b4632c">🟧 方向二花钱路径</span>　♻ 虚线=回炉</div>
+
+  <div class="board">
+    <!-- ================= 连线层 ================= -->
+    <svg class="wires" viewBox="0 0 1240 1104">
+      <defs>
+        <marker id="ah" markerWidth="9" markerHeight="9" refX="7.5" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="#8a8478"/>
+        </marker>
+        <marker id="ao" markerWidth="9" markerHeight="9" refX="7.5" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="#b4632c"/>
+        </marker>
+      </defs>
+
+      <!-- 主链：输入 → 资格门 →（拒收出口）→ 方向裁决 -->
+      <line x1="600" y1="82" x2="528" y2="112" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <line x1="660" y1="148" x2="718" y2="148" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+      <line x1="520" y1="184" x2="520" y2="214" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+
+      <!-- 裁决 → 方向一菜单 / 方向二 --free（橙） -->
+      <line x1="430" y1="304" x2="414" y2="382" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <path d="M 690 260 L 1020 260 L 1020 382" fill="none" stroke="#b4632c" stroke-width="1.6" marker-end="url(#ao)"/>
+
+      <!-- 菜单 → 四种下单方式 -->
+      <line x1="130" y1="440" x2="130" y2="468" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+      <line x1="319" y1="440" x2="319" y2="468" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+      <line x1="508" y1="440" x2="508" y2="468" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+      <line x1="697" y1="440" x2="697" y2="468" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+
+      <!-- 下单方式 → 载体分诊 -->
+      <line x1="130" y1="548" x2="130" y2="576" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+      <line x1="319" y1="548" x2="319" y2="576" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+      <line x1="508" y1="548" x2="508" y2="576" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+      <line x1="697" y1="548" x2="697" y2="576" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+
+      <!-- 载体 → 量化校验 / 回炉 -->
+      <line x1="244" y1="682" x2="244" y2="710" stroke="#8a8478" stroke-width="1.5" marker-end="url(#ah)"/>
+      <line x1="662" y1="682" x2="662" y2="710" stroke="#8a8478" stroke-width="1.5" marker-end="url(#ah)"/>
+
+      <!-- 满幅排列轴 → 生成引擎（橙虚线，方向一里唯一花钱路径；走两 zone 间隙避开节点） -->
+      <path d="M 784 628 L 814 628 L 814 505 L 840 505" fill="none" stroke="#b4632c" stroke-width="1.5"
+            stroke-dasharray="5 4" marker-end="url(#ao)"/>
+
+      <!-- 方向二内部流 -->
+      <line x1="1020" y1="448" x2="1020" y2="476" stroke="#b4632c" stroke-width="1.5" marker-end="url(#ao)"/>
+      <line x1="1020" y1="558" x2="1020" y2="586" stroke="#b4632c" stroke-width="1.5" marker-end="url(#ao)"/>
+      <line x1="1020" y1="648" x2="1020" y2="676" stroke="#b4632c" stroke-width="1.5" marker-end="url(#ao)"/>
+
+      <!-- 汇入输出层 -->
+      <line x1="279" y1="842" x2="279" y2="882" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <line x1="1020" y1="766" x2="1020" y2="882" stroke="#b4632c" stroke-width="1.5" marker-end="url(#ao)"/>
+    </svg>
+
+    <div class="lbl" style="left:920px;top:242px">方向二 · 按张计费</div>
+    <div class="lbl" style="left:678px;top:688px">排列轴→重排档 ↗</div>
+
+    <!-- ================= 节点层 ================= -->
+    <div class="node in" style="left:440px;top:26px;width:360px;height:56px">
+      <b>🖼 L1 输入层 · 花稿直喂</b>
+      <small>01_extracted / 02_hd / 03_restyle 自动续接工作区</small>
+    </div>
+
+    <div class="node triage" style="left:380px;top:112px;width:280px;height:72px">
+      <b>🛂 L2 资格门（板块2 判型卡同源）</b>
+      <small>VLM 判型 · 非花稿连菜单都不出</small>
+    </div>
+    <div class="node branch" style="left:718px;top:118px;width:280px;height:60px">
+      <b>✗ 非花稿 → 拒收，指路板块1 提取</b>
+      <small>partial 疑似整衣 → 警告放行</small>
+    </div>
+
+    <div class="node fork" style="left:350px;top:216px;width:340px;height:88px">
+      <b>🧭 L3 方向裁决</b>
+      <small>脚本信号：alpha 完好 / 色键可分离 / 质地判型 → suggest<br>
+      <b>用户拍板 · 方向二花钱必须显式选 · 裁决记 meta</b></small>
+    </div>
+
+    <!-- ===== 方向一 zone ===== -->
+    <div class="zone z1" style="left:24px;top:344px;width:780px;height:520px"></div>
+    <div class="zlabel zl1">方向一 · 直接处理（参数化道 · 纯代码免费为主 · 宪法：只改排布配色不改本体）</div>
+
+    <div class="node engine" style="left:44px;top:384px;width:740px;height:56px">
+      <b>📋 菜单优先：不默认生成（零生成零成本）</b>
+      <small>五轴可调项 + 按当前图标注可做 / 不可做 · 用户拍板才动手</small>
+    </div>
+
+    <div class="node branch" style="left:44px;top:470px;width:172px;height:78px">
+      <b>🎛 点单 flags</b><small>--layout / --rotation / --tilt / --density / --scale / --color / --bg / --frame</small>
+    </div>
+    <div class="node branch" style="left:233px;top:470px;width:172px;height:78px">
+      <b>📦 行业 preset ×5</b><small>ditsy 清新碎花 / vintage-allover / placement / street-packed / airy</small>
+    </div>
+    <div class="node branch" style="left:422px;top:470px;width:172px;height:78px">
+      <b>💬 一句话 --custom</b><small>1 次 VLM 解析成封闭参数<br>--dry-run 先看后跑</small>
+    </div>
+    <div class="node branch" style="left:611px;top:470px;width:172px;height:78px">
+      <b>🎲 系列采样 --sample auto</b><small>指定轴钉死<br>未指定轴逐张随机</small>
+    </div>
+
+    <div class="node engine" style="left:44px;top:578px;width:400px;height:104px">
+      <b>🧩 motif 载体 · 纯代码主轴（免费）</b>
+      <small>布点引擎 straight / half-drop / brick / mirror<br>
+      <b>＋ toss 散点 = Poisson 布点 + 角度±20°/360° + 缩放抖动</b><br>
+      调色变换 hue/invert/mono/duotone/调性 · 色键去底</small>
+    </div>
+    <div class="node engine" style="left:470px;top:578px;width:314px;height:104px">
+      <b>🧵 满幅稿 allover</b>
+      <small>换色像素级 ✓<br>比例 = 中心裁切 zoom 粗档<br>排列轴 → 生成式重排档（花钱）</small>
+    </div>
+
+    <div class="node triage" style="left:44px;top:712px;width:470px;height:130px">
+      <b>📏 量化校验（数字说话不靠肉眼）</b>
+      <small>覆盖率 vs 目标 ±25% 带 ｜ toss 最近邻 vs 最小距（不重叠保证）<br>
+      连通域计数 · 越界如实进 warnings<br>
+      <b>🔒 确定性：同 seed 同参数像素级一致（tests 钉死）· 参数写文件名可复现</b></small>
+    </div>
+    <div class="node dashed" style="left:540px;top:712px;width:244px;height:130px">
+      <div class="tt">♻ 生成式重排回炉 ≤2</div>
+      <small>本体变形 → 加锁定条款<br>排列未出 → 加强措辞<br><b>超次如实标注 verdict</b></small>
+    </div>
+
+    <!-- ===== 方向二 zone ===== -->
+    <div class="zone z2" style="left:824px;top:344px;width:392px;height:520px"></div>
+    <div class="zlabel zl2">方向二 · 自由生成（--free · 提示词即宪法）</div>
+
+    <div class="node free" style="left:844px;top:384px;width:352px;height:64px">
+      <b>🆓 --free "提示词"</b>
+      <small>不解析不拼模板——中间无人动用户的话</small>
+    </div>
+    <div class="node free" style="left:844px;top:478px;width:352px;height:80px">
+      <b>🎨 生图引擎</b>
+      <small>gpt 终点 / qwen 对照 / manual 提示词卡<br>黑图守卫 · 按张计费单次 ≤4</small>
+    </div>
+    <div class="node branch" style="left:844px;top:588px;width:352px;height:60px">
+      <small><b>透明底：</b>gpt 原生 ｜ qwen / 手动 → 自动色键</small>
+    </div>
+    <div class="node render" style="left:844px;top:678px;width:352px;height:88px">
+      <b>🏷 verdict=free</b>
+      <small>不做一致性校验<br>联络表单独 FREE 分区橙色标注 · 不与变体产物混装</small>
+    </div>
+
+    <!-- ===== 输出层 ===== -->
+    <div class="node out" style="left:130px;top:884px;width:980px;height:88px">
+      <b>📦 输出层 &lt;工作区&gt;/04_variants/</b>
+      <small>stem_tossT_s22_d25_v1.png（参数即文件名，可复现） ｜ contact_sheet.jpg（方向二 FREE 分区橙色）<br>
+      meta.json（seed / 全参数 / 提示词原文 / verdict / 量化度量） ｜ record_step 台账 ｜ stdout 一行 JSON</small>
+    </div>
+
+    <!-- ===== 底部板块链 ===== -->
+    <div class="chain">
+      <div class="cbox"><span class="no">①</span>图案提取<br>花稿/回样</div><div class="arr">→</div>
+      <div class="cbox"><span class="no">②</span>高清修复<br>超分放大</div><div class="arr">→</div>
+      <div class="cbox"><span class="no">③</span>风格延展<br>换画法</div><div class="arr">→</div>
+      <div class="cbox cur"><span class="no">④</span>图案变体<br>换排布/换色</div><div class="arr">→</div>
+      <div class="cbox"><span class="no">⑤</span>无缝循环<br>四方连续</div><div class="arr">→</div>
+      <div class="cbox"><span class="no">⑥</span>配色重组<br>分层换色</div>
+    </div>
+  </div>
+</body>
+</html>
