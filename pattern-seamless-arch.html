@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>无缝循环 · Pattern Seamless 架构图</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#faf9f6;color:#26221c;
+       font:13px/1.55 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;
+       display:flex;flex-direction:column;align-items:center;padding:22px 10px 44px}
+  h1{font-size:18px;font-weight:700;margin:0 0 4px;display:flex;align-items:center;gap:8px}
+  h1 .dot{width:9px;height:9px;border-radius:50%;background:#2f6b5a}
+  .sub{color:#8b8377;font-size:12px;margin-bottom:16px;text-align:center;max-width:1260px}
+  .board{position:relative;width:1240px;height:1140px;flex:none;
+         border:1px solid #e8e3d9;border-radius:12px;background:#fff;
+         box-shadow:0 2px 14px rgba(60,50,30,.06)}
+
+  .node{position:absolute;border-radius:8px;padding:9px 14px;text-align:center;
+        display:flex;flex-direction:column;justify-content:center;line-height:1.55;
+        box-shadow:0 1px 4px rgba(60,50,30,.10);font-size:12.5px}
+  .node b{font-weight:700}
+  .node small{font-size:11px;opacity:.92}
+  .in      {background:#5c8375;color:#fff}
+  .triage  {background:#4f7ba6;color:#fff}
+  .engine  {background:#2f6b5a;color:#fff}
+  .out     {background:#3f7d6b;color:#fff}
+  .fork    {background:#a26a3f;color:#fff}
+  .free    {background:#b4632c;color:#fff}
+  .branch  {background:#fdf3ea;border:1px solid #ecd9c4;color:#26221c;box-shadow:none}
+  .dashed  {background:#fbfaf7;border:1.5px dashed #b4632c;color:#26221c;text-align:left;box-shadow:none}
+
+  .zone{position:absolute;border-radius:12px}
+  .zA{background:#f3f8f5;border:1.5px solid rgba(47,107,90,.30)}
+  .zB{background:#f2f6f9;border:1.5px solid rgba(79,123,166,.30)}
+  .zC{background:#fdf6ee;border:1.5px solid rgba(180,99,44,.35)}
+  .zlabel{position:absolute;font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:6px}
+  .zlA{color:#245346;background:#e7f1ec;left:34px;top:316px}
+  .zlB{color:#2c4d6e;background:#e5edf4;left:430px;top:316px}
+  .zlC{color:#8a4a1c;background:#f9ead9;left:826px;top:316px}
+
+  .lbl{position:absolute;font-size:11px;color:#b4632c;background:rgba(251,250,247,.92);
+       padding:0 4px;border-radius:4px}
+  svg.wires{position:absolute;inset:0;width:100%;height:100%}
+
+  .chain{position:absolute;left:0;right:0;top:1020px;height:76px;
+         display:flex;align-items:center;justify-content:center}
+  .chain .cbox{width:172px;height:60px;border:1px solid #e8e3d9;border-radius:8px;
+               background:#fbfaf7;color:#5c554a;font-size:12px;text-align:center;
+               display:flex;flex-direction:column;justify-content:center;flex:none;line-height:1.45}
+  .chain .cbox .no{font-weight:700}
+  .chain .cbox.cur{background:#eef6f2;border:2px solid #2f6b5a;color:#245346;font-weight:700}
+  .chain .arr{width:30px;text-align:center;color:#8b8377;flex:none}
+</style>
+</head>
+<body>
+  <h1><span class="dot"></span>🔁 无缝循环 · Pattern Seamless 架构图</h1>
+  <div class="sub">印花模块 板块5 · 三路分岔拓扑：A排=环面构造（免费 · 可证明）· B切=周期裁切（免费 · 置信度说话）· C修=blend 兜底 → 生成式（花钱显式）· 菜单优先，用户没下单永不生成
+  　｜　图例：<span style="color:#2f6b5a">🟩 纯代码免费</span>　<span style="color:#4f7ba6">🟦 眼=VLM / 统一校验标尺</span>　<span style="color:#b4632c">🟧 花钱路径</span>　✅ 可证明 · ⚠️ 数字背书</div>
+
+  <div class="board">
+    <!-- ================= 连线层 ================= -->
+    <svg class="wires" viewBox="0 0 1240 1140">
+      <defs>
+        <marker id="ah" markerWidth="9" markerHeight="9" refX="7.5" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="#8a8478"/>
+        </marker>
+        <marker id="ao" markerWidth="9" markerHeight="9" refX="7.5" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="#b4632c"/>
+        </marker>
+      </defs>
+
+      <!-- 主链：输入 → 资格门 →（拒收出口）→ 三路裁决 -->
+      <line x1="600" y1="82" x2="528" y2="112" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <line x1="660" y1="148" x2="718" y2="148" stroke="#8a8478" stroke-width="1.4" marker-end="url(#ah)"/>
+      <line x1="520" y1="184" x2="520" y2="214" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+
+      <!-- 裁决 → 三路 -->
+      <line x1="420" y1="304" x2="222" y2="380" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <line x1="540" y1="304" x2="606" y2="380" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+      <line x1="650" y1="290" x2="1000" y2="380" stroke="#b4632c" stroke-width="1.6" marker-end="url(#ao)"/>
+
+      <!-- 三路 → 统一出口 -->
+      <line x1="216" y1="820" x2="216" y2="850" stroke="#8a8478" stroke-width="1.5" marker-end="url(#ah)"/>
+      <line x1="612" y1="820" x2="612" y2="850" stroke="#8a8478" stroke-width="1.5" marker-end="url(#ah)"/>
+      <line x1="1008" y1="820" x2="1008" y2="850" stroke="#b4632c" stroke-width="1.5" marker-end="url(#ao)"/>
+
+      <!-- 出口 → 输出层 -->
+      <line x1="620" y1="922" x2="620" y2="944" stroke="#8a8478" stroke-width="1.6" marker-end="url(#ah)"/>
+    </svg>
+
+    <div class="lbl" style="left:872px;top:300px">路C 生成式 · 按张计费</div>
+
+    <!-- ================= 节点层 ================= -->
+    <div class="node in" style="left:440px;top:26px;width:360px;height:56px">
+      <b>🖼 L1 输入层 · 花稿直喂</b>
+      <small>花型件 / 满幅稿 · 01-04 工作区产物自动续接</small>
+    </div>
+
+    <div class="node triage" style="left:380px;top:112px;width:280px;height:72px">
+      <b>🛂 L2 资格门（板块2 判型卡同源）</b>
+      <small>VLM 判型 · 非花稿连菜单都不出</small>
+    </div>
+    <div class="node branch" style="left:718px;top:118px;width:280px;height:60px">
+      <b>✗ 非花稿 → 拒收，指路板块1 提取</b>
+      <small>partial 疑似整衣 → 警告放行</small>
+    </div>
+
+    <div class="node fork" style="left:350px;top:216px;width:340px;height:88px">
+      <b>🧭 L3 三路裁决（菜单优先 · 零生成）</b>
+      <small>信号：alpha 完好 / 满幅覆盖 / 自相关峰 → suggest=A|B|C<br>
+      <b>用户拍板才下单 · 生成式花钱必须显式选 · 裁决记 meta</b></small>
+    </div>
+
+    <!-- ===== 路A zone ===== -->
+    <div class="zone zA" style="left:34px;top:344px;width:380px;height:496px"></div>
+    <div class="zlabel zlA">路A · 排（花型件→tile · 免费 · 构造性）</div>
+
+    <div class="node engine" style="left:52px;top:384px;width:344px;height:52px">
+      <b>🅰 花型件 → 无缝 tile · verdict=constructive</b>
+    </div>
+    <div class="node engine" style="left:52px;top:448px;width:344px;height:84px">
+      <b>🌀 环面布点 + wrap 绘制</b>
+      <small>Poisson/网格间距把边界当"绕过去"算；<br>
+      花型向 8 邻接偏移延续绘制——贴边完整不裁切</small>
+    </div>
+    <div class="node triage" style="left:52px;top:544px;width:344px;height:84px">
+      <b>✅ 构造性证明（不是看起来无缝）</b>
+      <small>tile 铺 3×3 中心裁切 = 原 tile <b>像素相等</b>（tests 钉死）<br>
+      同 seed 同参数像素级可复现</small>
+    </div>
+    <div class="node branch" style="left:52px;top:640px;width:344px;height:84px">
+      <b>🎛 五轴 + 5 preset</b>
+      <small>layout（含 toss 散点）/ rotation / density / scale / bg<br>
+      ditsy · vintage-allover · street-packed · geo-grid · airy</small>
+    </div>
+    <div class="node branch" style="left:52px;top:736px;width:344px;height:84px">
+      <b>📐 密度=相对间距 + 物理尺寸</b>
+      <small>sparse 1.5×/medium 1.15×/dense 0.95×/packed 0.8× 花型尺寸<br>
+      覆盖率只报告不承诺 · --dpi 记 repeat_cm 物理循环</small>
+    </div>
+
+    <!-- ===== 路B zone ===== -->
+    <div class="zone zB" style="left:430px;top:344px;width:380px;height:496px"></div>
+    <div class="zlabel zlB">路B · 切（满幅重复稿→repeat · 免费）</div>
+
+    <div class="node engine" style="left:448px;top:384px;width:344px;height:52px">
+      <b>🅱 自相关找周期 → 裁 repeat 单元 · verdict=period-crop</b>
+    </div>
+    <div class="node engine" style="left:448px;top:448px;width:344px;height:108px">
+      <b>📈 FFT 自相关找周期</b>
+      <small>(dx,dy) 最强周期峰 → 裁出 repeat 矩形<br>
+      等比 resize 到 --tile 保周期<br>
+      基频细化带下限守卫（防渐变假峰砍半周期）</small>
+    </div>
+    <div class="node triage" style="left:448px;top:568px;width:344px;height:108px">
+      <b>🎚 置信度说话</b>
+      <small>period_confidence 写 meta；<b>&lt;0.35 不硬裁</b> → 如实报 + 荐路C<br>
+      --period 人工指定可跳过检测（设计师看得出 repeat）</small>
+    </div>
+    <div class="node branch" style="left:448px;top:688px;width:344px;height:132px">
+      <b>🩹 近似周期 → 自动附修缝版</b>
+      <small>源图非严格周期（布纹变形/光影）时裁切版跳变超阈：<br>
+      <b>裁切版 + blendfix 版两版都交付供选</b>，数字如实携带</small>
+    </div>
+
+    <!-- ===== 路C zone ===== -->
+    <div class="zone zC" style="left:826px;top:344px;width:380px;height:496px"></div>
+    <div class="zlabel zlC">路C · 修（满幅不重复稿→修缝 · 先便宜后贵）</div>
+
+    <div class="node fork" style="left:844px;top:384px;width:344px;height:52px">
+      <b>🅲 修缝三档 · verdict=seam-fixed（亮明身份）</b>
+    </div>
+    <div class="node engine" style="left:844px;top:448px;width:344px;height:108px">
+      <b>🧮 blend 凹口修缝（免费兜底）</b>
+      <small>roll 偏移搜索 ±12 + 三角凹口渐变——周期可证明；<br>
+      代价=接缝带可能涂抹/鬼影，看 3×3 预览确认</small>
+    </div>
+    <div class="node free" style="left:844px;top:568px;width:344px;height:120px">
+      <b>✨ 生成式修缝（按张计费 · 显式选择）</b>
+      <small>roll 半格把缝移到画面中央 → GPT/qwen i2i 修十字<br>
+      跳变 + VLM 本体比对双校验 ♻ 回炉≤2 超次如实标注<br>
+      无 key 自动降手动档不报错</small>
+    </div>
+    <div class="node branch" style="left:844px;top:700px;width:344px;height:120px">
+      <b>💌 手动卡 + --collect 回接</b>
+      <small>出 _rolled_for_fix（缝在中央）+ 提示词卡<br>
+      任意工具修完回接：自动 roll 回 + 跳变校验<br>
+      --collect 不带原图也能定位最近工作区</small>
+    </div>
+
+    <!-- ===== 统一出口 ===== -->
+    <div class="node triage" style="left:44px;top:852px;width:1152px;height:70px">
+      <b>📏 统一出口标尺 · 数字说话不靠肉眼</b>
+      <small>边缘跳变比 = 接缝跳变 ÷ 内部基线 <b>≤1.2</b>（RGBA 双轴环绕）　｜　preview_3x3 白底铺贴 = <b>预览即产物</b>　｜
+      verdict：<b>constructive</b> ✅数学保证 / <b>period-crop</b> ✅附置信度 / <b>seam-fixed</b> ⚠️校验背书——全程携带不混装</small>
+    </div>
+
+    <!-- ===== 输出层 ===== -->
+    <div class="node out" style="left:130px;top:946px;width:980px;height:64px">
+      <b>📦 输出层 &lt;工作区&gt;/05_seamless/</b>
+      <small>&lt;stem&gt;_&lt;layout&gt;_t&lt;tile&gt;_v{n}.png ｜ &lt;stem&gt;_period_&lt;WxH&gt;.png(+_blendfix) ｜ &lt;stem&gt;_seamfix_&lt;method&gt;.png ｜ *_preview3x3.jpg<br>
+      meta.json（verdict/全参数/校验数字/lineage 台账） ｜ record_step("seamless") ｜ stdout 一行 JSON</small>
+    </div>
+
+    <!-- ===== 底部板块链 ===== -->
+    <div class="chain">
+      <div class="cbox"><span class="no">①</span>图案提取<br>花稿/回样</div><div class="arr">→</div>
+      <div class="cbox"><span class="no">②</span>高清修复<br>超分放大</div><div class="arr">→</div>
+      <div class="cbox"><span class="no">③</span>风格延展<br>换画法</div><div class="arr">→</div>
+      <div class="cbox"><span class="no">④</span>图案变体<br>换排布/换色</div><div class="arr">→</div>
+      <div class="cbox cur"><span class="no">⑤</span>无缝循环<br>四方连续</div><div class="arr">→</div>
+      <div class="cbox"><span class="no">⑥</span>配色重组<br>分层换色</div>
+    </div>
+  </div>
+</body>
+</html>

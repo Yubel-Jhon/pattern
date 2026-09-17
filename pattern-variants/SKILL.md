@@ -94,3 +94,9 @@ items[{mode,file,measures,plan|prompt,verdict}], seconds}`。产物落
 - 不做无缝循环（四方连续可生产化=板块5；本板块 toss 间隙按不重叠布点，不保证平铺连续）
 - 不做开放设计提案（轴封闭；自由创作走 --free 用户自己写提示词）
 - 生成式重排仅兜满幅稿排列轴，不承担大改变体（那是 --free 的活）
+
+## 原型环节
+
+五轴语义或 preset 调整后，可调 `ui-prototype` skill 刷新印花工坊界面原型
+（`Desktop\印花模块\pattern-workshop\原型-印花工坊.html`）里「图案变体」工序屏
+（五轴实时预览：排列/方向/密度/比例/镜像）。
